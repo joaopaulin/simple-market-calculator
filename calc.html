@@ -11,33 +11,27 @@
             font-family: 'Roboto', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            padding: 0 10px;
+            padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             height: 100vh;
-        }
-
-        .wrapper {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-            max-height: 90vh;
-            width: 100%;
-            max-width: 500px;
-            background-color: #d9eaff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .container {
-            flex: 1;
+            background-color: #d9eaff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             position: relative;
-            padding: 20px;
+            overflow: hidden;
         }
 
         textarea {
@@ -51,37 +45,6 @@
             resize: none;
             box-sizing: border-box;
             overflow-y: auto;
-            position: relative;
-        }
-
-        .clear-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #ffcccc;
-            border: none;
-            color: #000;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            padding: 10px;
-            z-index: 10;
-        }
-
-        .clear-btn:hover {
-            background-color: #ff9999;
-        }
-
-        .footer {
-            width: 100%;
-            background-color: #d9eaff;
-            border-top: 1px solid #ccc;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-sizing: border-box;
         }
 
         .btn {
@@ -100,11 +63,45 @@
             background-color: #cce5ff;
         }
 
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 500px;
+            background-color: #d9eaff;
+            border-top: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
         .total {
             font-size: 30px;
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0 10px;
+        }
+
+        .clear-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #ffcccc;
+            border: none;
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .clear-btn:hover {
+            background-color: #ff9999;
         }
 
         @media (max-width: 768px) {
@@ -130,15 +127,13 @@
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="container">
-            <button class="clear-btn" onclick="clearAll()">X</button>
-            <textarea id="inputArea" inputmode="text" placeholder="Digite aqui..."></textarea>
-        </div>
-        <div class="footer">
-            <button class="btn" onclick="calculateTotal()">Total</button>
-            <div class="total" id="totalValue">R$ 0,00</div>
-        </div>
+    <div class="container">
+        <button class="clear-btn" onclick="clearAll()">X</button>
+        <textarea id="inputArea" inputmode="text" placeholder="Digite aqui..."></textarea>
+    </div>
+    <div class="footer">
+        <button class="btn" onclick="calculateTotal()">Total</button>
+        <div class="total" id="totalValue">R$ 0,00</div>
     </div>
 
     <script>
