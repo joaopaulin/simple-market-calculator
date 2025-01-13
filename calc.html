@@ -8,11 +8,13 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             height: 100vh;
-            margin: 0;
+            overflow: hidden;
         }
 
         .container {
@@ -24,9 +26,10 @@
             height: 100%;
             box-sizing: border-box;
             padding: 20px;
-            position: relative;
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow: hidden;
         }
 
         textarea {
@@ -35,19 +38,19 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             padding: 20px;
-            font-size: 30px;
+            font-size: 20px;
             resize: none;
             box-sizing: border-box;
+            overflow-y: auto;
         }
 
         .btn {
-            margin-top: 20px;
-            padding: 20px;
+            padding: 15px;
             background-color: #e0f0ff;
             border: 1px solid #007bff;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 30px;
+            font-size: 20px;
             text-align: center;
             width: 100%;
         }
@@ -56,10 +59,26 @@
             background-color: #cce5ff;
         }
 
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 500px;
+            background-color: #d9eaff;
+            border-top: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
         .total {
-            margin-top: 20px;
-            font-size: 30px;
-            text-align: right;
+            font-size: 20px;
+            margin: 0;
+            padding: 0 10px;
         }
 
         .clear-btn {
@@ -81,22 +100,18 @@
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
             textarea {
-                font-size: 24px;
+                font-size: 16px;
                 padding: 15px;
             }
 
             .btn {
-                font-size: 24px;
-                padding: 15px;
+                font-size: 18px;
+                padding: 12px;
             }
 
             .total {
-                font-size: 24px;
+                font-size: 18px;
             }
 
             .clear-btn {
@@ -109,7 +124,9 @@
 <body>
     <div class="container">
         <button class="clear-btn" onclick="clearAll()">X</button>
-        <textarea id="inputArea" inputmode="numeric" pattern="[0-9,\s]*" placeholder="Digite aqui..."></textarea>
+        <textarea id="inputArea" inputmode="text" placeholder="Digite aqui..."></textarea>
+    </div>
+    <div class="footer">
         <button class="btn" onclick="calculateTotal()">Total</button>
         <div class="total" id="totalValue">R$ 0,00</div>
     </div>
