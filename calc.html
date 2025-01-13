@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Compras</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #d9eaff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            flex: 1;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            font-size: 30px;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e0f0ff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 30px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #cce5ff;
+        }
+
+        .total {
+            margin-top: 20px;
+            font-size: 30px;
+            text-align: right;
+        }
+
+        .clear-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #ffcccc;
+            border: none;
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .clear-btn:hover {
+            background-color: #ff9999;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            textarea {
+                font-size: 24px;
+                padding: 15px;
+            }
+
+            .btn {
+                font-size: 24px;
+                padding: 15px;
+            }
+
+            .total {
+                font-size: 24px;
+            }
+
+            .clear-btn {
+                font-size: 16px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="clear-btn" onclick="clearAll()">X</button>
+        <textarea id="inputArea" inputmode="numeric" pattern="[0-9,\s]*" placeholder="Digite aqui..."></textarea>
+        <button class="btn" onclick="calculateTotal()">Total</button>
+        <div class="total" id="totalValue">R$ 0,00</div>
+    </div>
+
+    <script>
+        const inputArea = document.getElementById('inputArea');
+        const totalValue = document.getElementById('totalValue');
+
+        // Carregar dados do localStorage ao carregar a página
+        window.onload = function() {
+            const savedData = localStorage.getItem('shoppingData');
+            if (savedData) {
+                inputArea.value = savedData;
+            }
+        };
+
+        // Atualizar o localStorage sempre que o conteúdo mudar
+        inputArea.addEventListener('input', () => {
+            localStorage.setItem('shoppingData', inputArea.value);
+        });
+
+        // Função para calcular o total
+        function calculateTotal() {
+            const lines = inputArea.value.split('\n');
+            let total = 0;
+
+            lines.forEach(line => {
+                const numbers = line.replace(',', '.').split(/[\s]+/).map(n => parseFloat(n.replace(',', '.'))).filter(n => !isNaN(n));
+
+                if (numbers.length === 2) {
+                    total += numbers[0] * numbers[1];
+                } else if (numbers.length === 1) {
+                    total += numbers[0];
+                }
+            });
+
+            totalValue.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        // Função para limpar tudo
+        function clearAll() {
+            const confirmClear = confirm('Você tem certeza que deseja limpar todos os dados?');
+            if (confirmClear) {
+                inputArea.value = '';
+                localStorage.removeItem('shoppingData');
+                totalValue.textContent = 'R$ 0,00';
+            }
+        }
+    </script>
+</body>
+</html>
