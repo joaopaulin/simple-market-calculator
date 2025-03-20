@@ -34,7 +34,7 @@
             overflow: hidden;
         }
 
-        textarea {
+        .display {
             flex: 1;
             width: 100%;
             border: 1px solid #ccc;
@@ -45,22 +45,44 @@
             resize: none;
             box-sizing: border-box;
             overflow-y: auto;
+            background: #fff;
+            height: 200px;
         }
 
-        .btn {
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 10px;
+            background: #e0f0ff;
+            border-top: 1px solid #ccc;
+        }
+
+        .key {
             padding: 15px;
-            background-color: #e0f0ff;
-            border: 1px solid #007bff;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 30px;
-            font-family: 'Roboto', sans-serif;
+            font-size: 24px;
             text-align: center;
-            width: 100%;
+            background: #cce5ff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
-        .btn:hover {
-            background-color: #cce5ff;
+        .key:active {
+            background: #b0d4ff;
+        }
+
+        .key.enter {
+            grid-row: span 2;
+        }
+
+        .key.comma {
+            grid-column: span 2;
+        }
+
+        .key.space {
+            grid-column: span 4;
+            height: 60px;
         }
 
         .footer {
@@ -82,85 +104,62 @@
         .total {
             font-size: 30px;
             font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0 10px;
-        }
-
-        .clear-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #ffcccc;
-            border: none;
-            color: #000;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        .clear-btn:hover {
-            background-color: #ff9999;
-        }
-
-        @media (max-width: 768px) {
-            textarea {
-                font-size: 24px;
-                padding: 15px;
-            }
-
-            .btn {
-                font-size: 24px;
-                padding: 12px;
-            }
-
-            .total {
-                font-size: 24px;
-            }
-
-            .clear-btn {
-                font-size: 16px;
-                padding: 8px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <button class="clear-btn" onclick="clearAll()">X</button>
-        <textarea id="inputArea" inputmode="text" placeholder="Digite aqui..."></textarea>
+        <textarea id="display" class="display" readonly></textarea>
+        <div class="keyboard" id="keyboard"></div>
     </div>
     <div class="footer">
-        <button class="btn" onclick="calculateTotal()">Total</button>
+        <button class="key" onclick="calculateTotal()">Total</button>
         <div class="total" id="totalValue">R$ 0,00</div>
     </div>
 
     <script>
-        const inputArea = document.getElementById('inputArea');
+        const display = document.getElementById('display');
+        const keyboard = document.getElementById('keyboard');
         const totalValue = document.getElementById('totalValue');
+        
+        const layout = [
+            '7', '8', '9', 'X',
+            '4', '5', '6', '←',
+            '1', '2', '3', 'Enter',
+            '0', ',', '␣'
+        ];
 
-        // Carregar dados do localStorage ao carregar a página
-        window.onload = function() {
-            const savedData = localStorage.getItem('shoppingData');
-            if (savedData) {
-                inputArea.value = savedData;
-            }
-        };
-
-        // Atualizar o localStorage sempre que o conteúdo mudar
-        inputArea.addEventListener('input', () => {
-            localStorage.setItem('shoppingData', inputArea.value);
+        layout.forEach(key => {
+            const button = document.createElement('button');
+            button.textContent = key;
+            button.className = 'key';
+            if (key === 'Enter') button.classList.add('enter');
+            if (key === ',') button.classList.add('comma');
+            if (key === '␣') button.classList.add('space');
+            button.onclick = () => handleKeyPress(key);
+            keyboard.appendChild(button);
         });
 
-        // Função para calcular o total
+        function handleKeyPress(key) {
+            if (key === '←') {
+                display.value = display.value.slice(0, -1);
+            } else if (key === 'X') {
+                display.value = '';
+            } else if (key === 'Enter') {
+                display.value += '\n';
+            } else if (key === '␣') {
+                display.value += ' ';
+            } else {
+                display.value += key;
+            }
+        }
+
         function calculateTotal() {
-            const lines = inputArea.value.split('\n');
+            const lines = display.value.split('\n');
             let total = 0;
 
             lines.forEach(line => {
-                const numbers = line.replace(',', '.').split(/[\s]+/).map(n => parseFloat(n.replace(',', '.'))).filter(n => !isNaN(n));
-
+                const numbers = line.replace(',', '.').split(/\s+/).map(n => parseFloat(n.replace(',', '.'))).filter(n => !isNaN(n));
                 if (numbers.length === 2) {
                     total += numbers[0] * numbers[1];
                 } else if (numbers.length === 1) {
@@ -169,16 +168,6 @@
             });
 
             totalValue.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-        }
-
-        // Função para limpar tudo
-        function clearAll() {
-            const confirmClear = confirm('Você tem certeza que deseja limpar todos os dados?');
-            if (confirmClear) {
-                inputArea.value = '';
-                localStorage.removeItem('shoppingData');
-                totalValue.textContent = 'R$ 0,00';
-            }
         }
     </script>
 </body>
