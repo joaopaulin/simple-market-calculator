@@ -8,4 +8,4 @@ A ferramenta foi pensada para uso rápido no celular enquanto a pessoa percorre 
 
 A calculadora está disponível em:
 
-https://joaoaulin.github.io/smc
+https://joaopaulin.github.io/smc
