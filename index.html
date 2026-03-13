@@ -1,174 +1,542 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Compras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculadora de Supermercado</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        :root {
+            --bg-color: #0f172a;
+            --container-bg: #1e293b;
+            --primary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: #334155;
+            --keyboard-bg: #0f172a;
+            --key-bg: #475569;
+            --key-active: #64748b;
+        }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
+            background-color: var(--bg-color);
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
-            overflow: hidden;
+            overscroll-behavior-y: none;
         }
 
-        .container {
-            background-color: #d9eaff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 500px;
-            height: calc(100vh - 100px);
-            box-sizing: border-box;
-            padding: 20px;
+        .app-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: var(--container-bg);
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
             overflow: hidden;
+            position: relative;
         }
 
-        .display {
-            flex: 1;
+        .header {
+            padding: 24px 20px;
+            background: linear-gradient(135deg, #6366f1 0%, var(--primary) 100%);
+            color: white;
+            z-index: 10;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 25px rgba(139, 92, 246, 0.4);
+            flex-shrink: 0;
+        }
+
+        .header h4 {
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .custom-input {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 4px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        #itemInput {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 500;
+            padding: 10px 14px;
+            box-shadow: none;
             width: 100%;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 20px;
-            font-size: 30px;
-            font-family: 'Roboto', sans-serif;
-            resize: none;
-            box-sizing: border-box;
+            outline: none;
+        }
+
+        #itemInput::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+        }
+
+        .item-table-wrapper {
+            flex-grow: 1;
             overflow-y: auto;
-            background: #fff;
-            height: 200px;
+            padding: 24px 16px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--card-bg) transparent;
+        }
+        
+        .item-table-wrapper::-webkit-scrollbar {
+            width: 6px;
+        }
+        .item-table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--card-bg);
+            border-radius: 10px;
+        }
+
+        .item-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px; 
+            margin: 0;
+        }
+
+        .item-table th {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            padding: 0 10px 4px;
+            border: none;
+        }
+        
+        .item-table td {
+            background-color: var(--card-bg);
+            padding: 16px 10px;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .item-table td:first-child {
+            border-top-left-radius: 14px;
+            border-bottom-left-radius: 14px;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+
+        .item-table td:last-child {
+            border-top-right-radius: 14px;
+            border-bottom-right-radius: 14px;
+            color: var(--success);
+            font-weight: 800;
+            text-align: right;
+            font-size: 1.05rem;
+        }
+
+        .item-table td.text-center {
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 40px;
+            font-weight: 400;
+            font-size: 0.95rem;
+        }
+
+        .fixed-bottom-area {
+            background-color: var(--keyboard-bg);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+            z-index: 100;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            flex-shrink: 0;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .keyboard {
+            padding: 16px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
-            padding: 10px;
-            background: #e0f0ff;
-            border-top: 1px solid #ccc;
         }
 
         .key {
-            padding: 15px;
-            font-size: 24px;
-            text-align: center;
-            background: #cce5ff;
+            height: 52px;
+            font-size: 1.5rem;
+            font-family: inherit;
+            font-weight: 500;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: none;
-            border-radius: 6px;
+            background-color: var(--key-bg);
+            color: var(--text-main);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            transition: all 0.1s ease;
+            user-select: none;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .key:active {
-            background: #b0d4ff;
+            transform: translateY(4px);
+            box-shadow: 0 0 0 rgba(0,0,0,0.2);
+            background-color: var(--key-active);
         }
 
-        .key.enter {
-            grid-row: span 2;
+        .key-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .key-danger:active {
+            background-color: rgba(239, 68, 68, 0.2);
         }
 
-        .key.comma {
-            grid-column: span 2;
+        .key-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+            color: white;
+            font-weight: 700;
         }
 
-        .key.space {
-            grid-column: span 4;
-            height: 60px;
+        .key-text {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
         }
 
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 500px;
-            background-color: #d9eaff;
-            border-top: 1px solid #ccc;
-            padding: 10px;
+        .totals-area {
+            padding: 0 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .total-price-wrapper {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-sizing: border-box;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 16px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
-        .total {
-            font-size: 30px;
-            font-family: 'Roboto', sans-serif;
+        .total-label {
+            font-size: 1rem;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .total-price {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: var(--success);
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+            letter-spacing: -1px;
+        }
+
+        .btn-reset {
+            background-color: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-reset:active {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        @media (max-height: 700px) {
+            .key { height: 44px; font-size: 1.3rem; }
+            .header { padding: 16px 20px; }
+            .header h4 { margin-bottom: 12px; font-size: 1.3rem; }
+            .totals-area { padding: 0 16px 16px 16px; }
+            .keyboard { padding: 12px 16px; gap: 8px; }
+            .total-price { font-size: 1.6rem; }
+            .total-price-wrapper { padding: 12px 16px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <textarea id="display" class="display" readonly></textarea>
-        <div class="keyboard" id="keyboard"></div>
-    </div>
-    <div class="footer">
-        <button class="key" onclick="calculateTotal()">Total</button>
-        <div class="total" id="totalValue">R$ 0,00</div>
+    <div class="app-container">
+        <!-- Top Header & Input Section -->
+        <div class="header">
+            <h4>Calculadora Mercado</h4>
+            <div class="custom-input">
+                <input type="text" id="itemInput" placeholder="Quantidade Preço" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="none" readonly>
+            </div>
+        </div>
+
+        <!-- Table View -->
+        <div class="item-table-wrapper">
+            <table class="item-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th class="text-center">Qtd</th>
+                        <th class="text-center">Un.</th>
+                        <th class="text-end">R$ Total</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsBody">
+                    <!-- Items will be generated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Fixed Bottom Section -->
+        <div class="fixed-bottom-area">
+            <!-- Virtual Keyboard -->
+            <div class="keyboard">
+                <button class="key" onclick="pressKey('7')">7</button>
+                <button class="key" onclick="pressKey('8')">8</button>
+                <button class="key" onclick="pressKey('9')">9</button>
+                <button class="key key-danger" onclick="backspace()">⌫</button>
+
+                <button class="key" onclick="pressKey('4')">4</button>
+                <button class="key" onclick="pressKey('5')">5</button>
+                <button class="key" onclick="pressKey('6')">6</button>
+                <button class="key" onclick="pressKey(',')">,</button>
+
+                <button class="key" onclick="pressKey('1')">1</button>
+                <button class="key" onclick="pressKey('2')">2</button>
+                <button class="key" onclick="pressKey('3')">3</button>
+                <button class="key key-text" onclick="pressKey(' ')">Espaço</button>
+
+                <button class="key" style="grid-column: span 2;" onclick="pressKey('0')">0</button>
+                <button class="key key-primary key-text" style="grid-column: span 2;" onclick="addItem()">Enter</button>
+            </div>
+
+            <!-- Totals & Reset -->
+            <div class="totals-area">
+                <div class="total-price-wrapper">
+                    <span class="total-label">Total</span>
+                    <span class="total-price" id="totalPriceDisplay">R$ 0,00</span>
+                </div>
+                <button class="btn-reset" onclick="resetItems()">Resetar Compra</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        const display = document.getElementById('display');
-        const keyboard = document.getElementById('keyboard');
-        const totalValue = document.getElementById('totalValue');
+        const STORAGE_KEY = 'supermarket_calculator';
+        const itemInput = document.getElementById('itemInput');
         
-        const layout = [
-            '7', '8', '9', 'X',
-            '4', '5', '6', '←',
-            '1', '2', '3', 'Enter',
-            '0', ',', '␣'
-        ];
+        // Virtual Keyboard
+        function pressKey(val) {
+            itemInput.value += val;
+            itemInput.scrollLeft = itemInput.scrollWidth; // Auto scroll to end
+        }
 
-        layout.forEach(key => {
-            const button = document.createElement('button');
-            button.textContent = key;
-            button.className = 'key';
-            if (key === 'Enter') button.classList.add('enter');
-            if (key === ',') button.classList.add('comma');
-            if (key === '␣') button.classList.add('space');
-            button.onclick = () => handleKeyPress(key);
-            keyboard.appendChild(button);
+        function backspace() {
+            itemInput.value = itemInput.value.slice(0, -1);
+        }
+
+        // Support Physical Keyboard
+        itemInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addItem();
+            }
         });
+        
+        // Formatting Helpers
+        function formatMoney(num) {
+            return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        
+        function formatQuantity(num) {
+            if (Number.isInteger(num)) return num.toString();
+            return num.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 3 });
+        }
 
-        function handleKeyPress(key) {
-            if (key === '←') {
-                display.value = display.value.slice(0, -1);
-            } else if (key === 'X') {
-                display.value = '';
-            } else if (key === 'Enter') {
-                display.value += '\n';
-            } else if (key === '␣') {
-                display.value += ' ';
+        // Parse Input Logic based on specification rules
+        function parseInput(input) {
+            let normalized = input.trim().replace(/,/g, '.').split(/\s+/);
+            
+            // Exactly 2 numbers required
+            if (normalized.length !== 2) return null;
+            
+            let str1 = normalized[0];
+            let str2 = normalized[1];
+
+            let val1 = parseFloat(str1);
+            let val2 = parseFloat(str2);
+
+            if (isNaN(val1) || isNaN(val2)) return null;
+
+            // Extract exact decimal places accurately from string
+            const getDecimals = (numStr) => {
+                if (!numStr.includes('.')) return 0;
+                return numStr.split('.')[1].length;
+            };
+
+            let dec1 = getDecimals(str1);
+            let dec2 = getDecimals(str2);
+
+            // Rule: Exactly 2 decimals = price
+            // Rule: Integer (0 decimals) or 3 decimals = quantity
+            // Rule: Both 2 decimals = invalid
+            if (dec1 === 2 && dec2 === 2) {
+                return null;
+            }
+            
+            let isVal1Price = dec1 === 2;
+            let isVal2Price = dec2 === 2;
+            
+            let isVal1Qtd = dec1 === 0 || dec1 === 3;
+            let isVal2Qtd = dec2 === 0 || dec2 === 3;
+
+            let qtd, preco;
+
+            if (isVal1Price && isVal2Qtd) {
+                preco = val1;
+                qtd = val2;
+            } else if (isVal2Price && isVal1Qtd) {
+                preco = val2;
+                qtd = val1;
             } else {
-                display.value += key;
+                return null; // Ignore if format doesn't match rules
+            }
+
+            return { quantidade: qtd, preco_unitario: preco };
+        }
+
+        // Store Logic
+        function getItems() {
+            let items = localStorage.getItem(STORAGE_KEY);
+            return items ? JSON.parse(items) : [];
+        }
+
+        function saveItems(items) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        }
+
+        function addItem() {
+            let inputVal = itemInput.value;
+            let parsed = parseInput(inputVal);
+            
+            if (!parsed) {
+                // Ignore gracefully - clear input as feedback (or you could shake it, but clear is simple)
+                itemInput.value = '';
+                return;
+            }
+            
+            let items = getItems();
+            let novoId = items.length > 0 ? items[items.length - 1].id + 1 : 1;
+            
+            // Calc total: quantity x item price, rounded to 2 decimals safely
+            let precoTotal = Math.round(parsed.quantidade * parsed.preco_unitario * 100) / 100;
+            
+            items.push({
+                id: novoId,
+                quantidade: parsed.quantidade,
+                preco_unitario: parsed.preco_unitario,
+                preco_total: precoTotal
+            });
+            
+            saveItems(items);
+            itemInput.value = '';
+            render();
+        }
+
+        function resetItems() {
+            let items = getItems();
+            if (items.length === 0) return;
+
+            if (confirm('Tem certeza que deseja apagar toda a compra?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                render();
             }
         }
 
-        function calculateTotal() {
-            const lines = display.value.split('\n');
-            let total = 0;
+        function render() {
+            let items = getItems();
+            let tbody = document.getElementById('itemsBody');
+            
+            if (items.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                Nenhuma compra adicionada ainda.
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('totalPriceDisplay').textContent = 'R$ 0,00';
+                return;
+            }
 
-            lines.forEach(line => {
-                const numbers = line.replace(',', '.').split(/\s+/).map(n => parseFloat(n.replace(',', '.'))).filter(n => !isNaN(n));
-                if (numbers.length === 2) {
-                    total += numbers[0] * numbers[1];
-                } else if (numbers.length === 1) {
-                    total += numbers[0];
-                }
+            tbody.innerHTML = '';
+            let finalTotal = 0;
+            
+            items.forEach(item => {
+                finalTotal += item.preco_total;
+                
+                let tr = document.createElement('tr');
+                
+                let tdId = document.createElement('td');
+                tdId.textContent = item.id;
+                
+                let tdQtd = document.createElement('td');
+                tdQtd.className = 'text-center';
+                tdQtd.textContent = formatQuantity(item.quantidade);
+                
+                let tdPreco = document.createElement('td');
+                tdPreco.className = 'text-center';
+                tdPreco.textContent = formatMoney(item.preco_unitario);
+                
+                let tdTotal = document.createElement('td');
+                tdTotal.textContent = formatMoney(item.preco_total);
+                
+                tr.appendChild(tdId);
+                tr.appendChild(tdQtd);
+                tr.appendChild(tdPreco);
+                tr.appendChild(tdTotal);
+                
+                tbody.appendChild(tr);
             });
-
-            totalValue.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            
+            // Round fix for JS float errors
+            finalTotal = Math.round(finalTotal * 100) / 100;
+            document.getElementById('totalPriceDisplay').textContent = 'R$ ' + formatMoney(finalTotal);
+            
+            // Auto scroll table safely
+            let wrapper = document.querySelector('.item-table-wrapper');
+            wrapper.scrollTop = wrapper.scrollHeight;
         }
+
+        // Initialize 
+        render();
     </script>
 </body>
 </html>
