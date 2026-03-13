@@ -431,7 +431,9 @@ sem dependência de rede.
 
 # 06 — implementation-rules.md
 
+```md
 * código deve ser claro
 * usar funções pequenas
 * evitar duplicação
 * comentar parsing
+```
