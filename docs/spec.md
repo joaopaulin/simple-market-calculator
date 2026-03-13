@@ -196,6 +196,17 @@ quantidade/peso e preço unitário.
 
 A ordem pode ser invertida.
 
+Caso seja digitado apenas um número com duas casas decimais, esse número deve ser considerado o valor unitário e a quantidade deve ser considerada como 1.
+
+Exemplos:
+
+14,99
+
+resultado:
+
+quantidade = 1
+preço_unitario = 14.99
+
 ---
 
 ## 2. Normalização
