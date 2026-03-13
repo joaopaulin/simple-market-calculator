@@ -114,7 +114,7 @@ Centralizada horizontalmente.
 
 Topo da tela:
 
-[ input texto ][ botão adicionar ]
+[ input texto ]
 
 Abaixo:
 
@@ -167,7 +167,9 @@ espaço
 backspace
 enter (que tem o mesmo efeito do botão adicionar)
 
-Ao implementar esse teclado numérido virtual, o campo input text nao deve exibir o teclado do dispositivo ao ser clicado, mas sim acatar a entrada desse teclado virtual.
+Ao implementar esse teclado numérico virtual, o campo input text nao deve exibir o teclado do dispositivo ao ser clicado, mas sim acatar a entrada desse teclado virtual.
+
+Lembre-se de desativar o clique-duplo para zoom nesses botões, pois o usuário pode digitar muito rápido nesses botões e a interface intepretar isso como zoom.
 ```
 
 ---
