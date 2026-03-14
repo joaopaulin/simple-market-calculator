@@ -138,6 +138,10 @@ Exemplo:
 
 1 | 2 | 14,99 | 29,98
 
+Deverá ser possível remover cada linha individualmente também, através de um botão ao lado direito de cada registro. Ao clicar neste ícone, deverá ser aberto uma confirmação, igual a de exlcuir compra, com todos os dados da linha para que o usuário possa confirmar a remoção.
+
+Ao ser removida uma linha, os IDs dos ítens restantes devem ser recalculados e devem voltar a listar a partir do 1
+
 ## 4. Rodapé fixo
 
 O total da compra deve ficar sempre visível.
