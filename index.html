@@ -138,13 +138,36 @@
             font-size: 0.95rem;
         }
 
-        .item-table td:last-child {
-            border-top-right-radius: 14px;
-            border-bottom-right-radius: 14px;
+        .item-table td:nth-child(4) {
             color: var(--success);
             font-weight: 800;
             text-align: right;
             font-size: 1.05rem;
+        }
+
+        .item-table td:last-child {
+            border-top-right-radius: 14px;
+            border-bottom-right-radius: 14px;
+            text-align: center;
+            padding-left: 0;
+            padding-right: 12px;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+        }
+
+        .btn-delete:active {
+            transform: scale(0.9);
         }
 
         .item-table td.text-center {
@@ -333,6 +356,7 @@
                         <th class="text-center">Qtd</th>
                         <th class="text-center">Un.</th>
                         <th class="text-end">R$ Total</th>
+                        <th style="width: 40px;"></th>
                     </tr>
                 </thead>
                 <tbody id="itemsBody">
@@ -470,6 +494,30 @@
             return { quantidade: qtd, preco_unitario: preco };
         }
 
+        function removeItem(id) {
+            let items = getItems();
+            const itemToRemove = items.find(item => item.id === id);
+            
+            if (!itemToRemove) return;
+
+            const confirmMsg = `Deseja remover este item?\n\n` +
+                               `Item ID: ${itemToRemove.id}\n` +
+                               `Quantidade: ${formatQuantity(itemToRemove.quantidade)}\n` +
+                               `Preço Un.: R$ ${formatMoney(itemToRemove.preco_unitario)}\n` +
+                               `Total: R$ ${formatMoney(itemToRemove.preco_total)}`;
+
+            if (confirm(confirmMsg)) {
+                items = items.filter(item => item.id !== id);
+                // Re-index remaining items to ensure they are sequential starting from 1
+                items = items.map((item, index) => ({
+                    ...item,
+                    id: index + 1
+                }));
+                saveItems(items);
+                render();
+            }
+        }
+
         // Store Logic
         function getItems() {
             let items = localStorage.getItem(STORAGE_KEY);
@@ -491,7 +539,7 @@
             }
 
             let items = getItems();
-            let novoId = items.length > 0 ? items[items.length - 1].id + 1 : 1;
+            let novoId = items.length + 1;
 
             // Calc total: quantity x item price, rounded to 2 decimals safely
             let precoTotal = Math.round(parsed.quantidade * parsed.preco_unitario * 100) / 100;
@@ -525,7 +573,7 @@
             if (items.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="4">
+                        <td colspan="5">
                             <div class="empty-state">
                                 Nenhuma compra adicionada ainda.
                             </div>
@@ -558,10 +606,18 @@
                 let tdTotal = document.createElement('td');
                 tdTotal.textContent = formatMoney(item.preco_total);
 
+                let tdAction = document.createElement('td');
+                let btnDel = document.createElement('button');
+                btnDel.className = 'btn-delete';
+                btnDel.innerHTML = '🗑';
+                btnDel.onclick = () => removeItem(item.id);
+                tdAction.appendChild(btnDel);
+
                 tr.appendChild(tdId);
                 tr.appendChild(tdQtd);
                 tr.appendChild(tdPreco);
                 tr.appendChild(tdTotal);
+                tr.appendChild(tdAction);
 
                 tbody.appendChild(tr);
             });
