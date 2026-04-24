@@ -454,3 +454,36 @@ sem dependência de rede.
 * evitar duplicação
 * comentar parsing
 ```
+
+---
+
+# 07 — manual-de-uso.md
+
+```md
+# Manual de Uso Técnico
+
+O sistema opera com base em reconhecimento de padrões numéricos no campo de entrada principal.
+
+## 1. Casos de Uso Suportados
+
+1. **Item Unitário:**
+   - Formato: `[Preço]`
+   - Regra: Um único número com 2 casas decimais.
+   - Resultado: Quantidade definida como 1, valor unitário definido como a entrada.
+
+2. **Múltiplas Unidades:**
+   - Formato: `[Quantidade] [Espaço] [Preço]` ou `[Preço] [Espaço] [Quantidade]`
+   - Regra: Um número inteiro e um número com 2 casas decimais.
+
+3. **Produtos por Peso:**
+   - Formato: `[Peso] [Espaço] [Preço]` ou `[Preço] [Espaço] [Peso]`
+   - Regra: Um número com 3 casas decimais e um número com 2 casas decimais.
+
+## 2. Regras de Interface
+
+- **Entrada:** O sistema deve validar a entrada ao pressionar [ENTER] ou clicar em "Adicionar".
+- **Edição:** Itens podem ser removidos individualmente via ícone de lixeira com confirmação.
+- **Reset:** Limpeza total da lista via botão "RESETAR COMPRA" com confirmação.
+- **Persistência:** Sincronização automática com `localStorage` em cada alteração.
+```
+
